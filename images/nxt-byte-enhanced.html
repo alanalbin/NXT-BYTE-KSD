@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#08050f" />
+  <title>NXT Byte — Entrepreneurship Cell</title>
+  <meta name="description" content="NXT Byte is the Entrepreneurship Cell building the next generation of student founders — turning raw ideas into shipped products." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #08050f;
+      --bg-soft: #10091c;
+      --surface: rgba(24, 14, 40, .72);
+      --surface-strong: #1a0f2b;
+      --text: #f9f7ff;
+      --muted: #aaa1bb;
+      --faint: #70677e;
+      --purple: #9b5cff;
+      --purple-deep: #6d2ee8;
+      --violet: #d187ff;
+      --line: rgba(203, 166, 255, .17);
+      --line-bright: rgba(203, 166, 255, .34);
+      --shadow: 0 28px 90px rgba(0, 0, 0, .42);
+      --ease-out: cubic-bezier(.23, 1, .32, 1);
+      --ease-in-out: cubic-bezier(.77, 0, .175, 1);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 73% 8%, rgba(116, 44, 220, .16), transparent 28rem),
+        radial-gradient(circle at 5% 52%, rgba(66, 24, 123, .12), transparent 28rem),
+        var(--bg);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      content: '';
+      opacity: .18;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+    }
+    body::after {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      content: '';
+      opacity: .34;
+      background: radial-gradient(circle at 50% -10%, rgba(210, 135, 255, .12), transparent 38%), linear-gradient(120deg, transparent 0 45%, rgba(155, 92, 255, .035) 50%, transparent 55% 100%);
+      background-size: 100% 100%, 240% 100%;
+      animation: ambient-sweep 18s ease-in-out infinite alternate;
+    }
+    ::selection { color: #0a0513; background: var(--violet); }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    svg { display: block; }
+    .shell { width: min(1160px, calc(100% - 48px)); margin: 0 auto; }
+    .skip-link {
+      position: fixed; top: 14px; left: 14px; z-index: 100;
+      transform: translateY(-160%); padding: 10px 15px; border-radius: 10px;
+      color: #0d0717; background: var(--violet); transition: transform .18s var(--ease-out);
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    /* Ambient motion layers */
+    .cursor-glow {
+      position: fixed; z-index: -1; width: 360px; height: 360px; pointer-events: none;
+      border-radius: 50%; opacity: .16; filter: blur(42px);
+      background: radial-gradient(circle, rgba(187, 112, 255, .9) 0, rgba(126, 41, 255, .28) 32%, transparent 70%);
+      transform: translate(-50%, -50%); transition: left .45s var(--ease-out), top .45s var(--ease-out);
+    }
+    .scroll-progress { position: fixed; top: 0; left: 0; z-index: 80; width: 100%; height: 3px; transform-origin: left; transform: scaleX(0); background: linear-gradient(90deg, var(--purple-deep), var(--violet)); box-shadow: 0 0 18px var(--purple); }
+
+    /* Navigation */
+    .site-header {
+      position: fixed; top: 0; left: 0; z-index: 50; width: 100%;
+      border-bottom: 1px solid transparent; transition: background .35s ease, border-color .35s ease, box-shadow .35s ease;
+    }
+    .site-header.scrolled { background: rgba(8, 5, 15, .72); border-color: var(--line); box-shadow: 0 16px 40px rgba(0,0,0,.16); backdrop-filter: blur(22px); }
+    .site-header.scrolled .brand-name { text-shadow: 0 0 18px rgba(209, 135, 255, .42); }
+    .brand-name { transition: color .3s ease, text-shadow .3s ease; }
+    .brand:hover .brand-name { color: var(--violet); text-shadow: 0 0 22px rgba(209, 135, 255, .7); }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; min-height: 82px; gap: 28px; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; font-family: 'Space Grotesk', sans-serif; font-size: 1.02rem; font-weight: 700; letter-spacing: -.03em; }
+    /* Logo insertion point: replace the src value with your logo file path, for example images/logo.png. */
+    .brand-logo { display: block; width: auto; max-width: 150px; height: 38px; object-fit: contain; }
+    .brand-logo-slot { display: none; width: 38px; height: 38px; border: 1px dashed rgba(225, 195, 255, .5); border-radius: 11px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: .55rem; letter-spacing: .08em; place-items: center; } 
+    .brand-logo-slot.is-visible { display: grid; } 
+    .brand-mark { position: relative; display: grid; place-items: center; width: 31px; height: 31px; border: 1px solid rgba(225, 195, 255, .66); border-radius: 50%; box-shadow: 0 0 24px rgba(153, 81, 255, .55), inset 0 0 14px rgba(209, 135, 255, .22); }
+    .brand-mark::before, .brand-mark::after { position: absolute; content: ''; border-radius: 50%; border: 1px solid rgba(190, 119, 255, .6); }
+    .brand-mark::before { width: 21px; height: 10px; transform: rotate(45deg); }
+    .brand-mark::after { width: 21px; height: 10px; transform: rotate(-45deg); }
+    .brand-mark-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 10px var(--violet); } 
+    .site-header .brand-mark { display: none; } 
+    .site-header .brand-logo { display: none; } 
+    .site-header .brand-logo-slot { display: grid; } 
+    .brand-logo-slot code { font-size: .5rem; } 
+    .brand-mark-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 10px var(--violet); } 
+    .nav-links { display: flex; align-items: center; gap: 30px; margin-left: auto; }
+    .nav-links a { position: relative; padding: 7px 0; color: #bdb4ca; font-size: .88rem; transition: color .2s ease; }
+    .nav-links a::after { position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; content: ''; transform: scaleX(0); transform-origin: right; background: var(--violet); transition: transform .25s var(--ease-out); }
+    .nav-links a:hover, .nav-links a.active { color: var(--text); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); transform-origin: left; }
+    .menu-toggle { display: none; width: 42px; height: 42px; padding: 0; border: 1px solid var(--line); border-radius: 50%; color: var(--text); background: rgba(255,255,255,.03); cursor: pointer; }
+    .menu-toggle span, .menu-toggle span::before, .menu-toggle span::after { display: block; width: 15px; height: 1px; margin: auto; background: currentColor; transition: transform .2s ease; }
+    .menu-toggle span { position: relative; }
+    .menu-toggle span::before, .menu-toggle span::after { position: absolute; content: ''; }
+    .menu-toggle span::before { transform: translateY(-5px); }
+    .menu-toggle span::after { transform: translateY(5px); }
+    .menu-toggle[aria-expanded='true'] span { background: transparent; }
+    .menu-toggle[aria-expanded='true'] span::before { transform: rotate(45deg); }
+    .menu-toggle[aria-expanded='true'] span::after { transform: rotate(-45deg); }
+
+    /* Buttons */
+    .btn { position: relative; isolation: isolate; display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 47px; padding: 0 18px; border: 1px solid transparent; border-radius: 999px; font-size: .88rem; font-weight: 600; cursor: pointer; overflow: hidden; transition: transform .16s var(--ease-out), box-shadow .24s ease, background .24s ease, border-color .24s ease, color .24s ease; }
+    .btn::before { position: absolute; top: -120%; left: -30%; z-index: -1; width: 28%; height: 340%; content: ''; transform: rotate(22deg) translateX(-260%); background: linear-gradient(90deg, transparent, rgba(255,255,255,.38), transparent); transition: transform .65s var(--ease-out); }
+    .btn:hover::before { transform: rotate(22deg) translateX(620%); }
+    .btn:hover { transform: translateY(-3px); }
+    .btn:active { transform: scale(.97); }
+    .btn:focus-visible, a:focus-visible, button:focus-visible { outline: 2px solid var(--violet); outline-offset: 4px; }
+    .btn-primary { color: #12071e; background: linear-gradient(110deg, #a361ff, #d28aff 48%, #8d4bff); box-shadow: 0 0 0 0 rgba(177, 102, 255, .45), 0 10px 32px rgba(121, 41, 241, .22); }
+    .btn-primary:hover { box-shadow: 0 0 0 5px rgba(177,102,255,.09), 0 15px 40px rgba(121,41,241,.42); }
+    .btn-ghost { border-color: var(--line); color: #e1d9e9; background: rgba(255,255,255,.025); backdrop-filter: blur(10px); }
+    .btn-ghost:hover { border-color: var(--line-bright); background: rgba(162, 87, 255, .1); }
+    .btn-linkedin { min-height: 35px; padding: 0 12px; border-color: var(--line); color: #c8bfd4; font-size: .76rem; }
+    .btn-linkedin:hover { border-color: rgba(185, 120, 255, .56); color: white; background: rgba(161, 91, 255, .14); }
+    .icon-arrow, .icon-external, .icon-in { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+    .icon-in { fill: currentColor; stroke: none; }
+    .btn-primary .icon-arrow { transition: transform .2s var(--ease-out); }
+    .btn-primary:hover .icon-arrow { transform: translateX(4px); }
+
+    /* Hero */
+    .hero { position: relative; min-height: 850px; overflow: hidden; border-bottom: 1px solid var(--line); }
+    .hero::before { position: absolute; inset: 0; content: ''; opacity: .38; pointer-events: none; background-image: radial-gradient(circle, rgba(217, 163, 255, .7) 0 1px, transparent 1.5px); background-size: 120px 120px; mask-image: linear-gradient(to bottom, rgba(0,0,0,.8), transparent 72%); animation: star-drift 24s linear infinite; }
+    .hero-title { text-shadow: 0 12px 50px rgba(116, 44, 220, .18); }
+    .eyebrow::before { animation: line-pulse 2.8s ease-in-out infinite; }
+    .hero::after { position: absolute; right: 0; bottom: -190px; left: 0; height: 310px; content: ''; background: linear-gradient(transparent, var(--bg)); pointer-events: none; }
+    .hero-aurora { position: absolute; top: 9%; right: -15%; width: 780px; height: 780px; border-radius: 50%; opacity: .86; filter: blur(9px); background: conic-gradient(from 180deg, transparent 0 25%, rgba(138, 53, 253, .7) 38%, rgba(218, 131, 255, .5) 47%, transparent 64% 100%); animation: aurora-spin 18s linear infinite; }
+    .hero-aurora::after { position: absolute; inset: 13%; content: ''; border-radius: inherit; background: var(--bg); box-shadow: 0 0 120px 20px rgba(128, 45, 241, .35); }
+    .hero-grid { position: absolute; inset: 0; opacity: .3; background-image: linear-gradient(rgba(194, 132, 255, .08) 1px, transparent 1px), linear-gradient(90deg, rgba(194, 132, 255, .08) 1px, transparent 1px); background-size: 74px 74px; mask-image: linear-gradient(to bottom, black, transparent 82%); animation: grid-drift 20s linear infinite; }
+    .hero-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: flex-start; padding-top: 190px; }
+    .eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 20px; color: #c596ff; font-family: 'DM Mono', monospace; font-size: .72rem; letter-spacing: .17em; text-transform: uppercase; }
+    .eyebrow::before { width: 27px; height: 1px; content: ''; background: linear-gradient(90deg, transparent, var(--violet)); }
+    .hero-title { max-width: 820px; margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: clamp(3.2rem, 7.6vw, 6.8rem); font-weight: 600; letter-spacing: -.085em; line-height: .98; }
+    .grad { color: transparent; background: linear-gradient(110deg, #bb7aff, #f3c7ff 48%, #8d4bff); -webkit-background-clip: text; background-clip: text; background-size: 180% auto; animation: gradient-flow 7s ease-in-out infinite; }
+    .hero-copy { max-width: 610px; margin: 30px 0 0; color: var(--muted); font-size: 1.04rem; line-height: 1.78; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .hero-stats { display: flex; flex-wrap: wrap; gap: 42px; margin: 94px 0 0; padding: 0; }
+    .stat { position: relative; padding-left: 17px; }
+    .stat::before { position: absolute; top: 5px; bottom: 4px; left: 0; width: 1px; content: ''; background: linear-gradient(var(--violet), transparent); }
+    .stat dt { color: var(--faint); font-family: 'DM Mono', monospace; font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; }
+    .stat dd { margin: 4px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 600; letter-spacing: -.08em; }
+    .hero-orbit { position: absolute; right: 8%; bottom: 12%; z-index: 1; width: 210px; height: 210px; border: 1px solid rgba(199, 144, 255, .25); border-radius: 50%; opacity: .8; animation: float 6s ease-in-out infinite; }
+    .hero-orbit::before, .hero-orbit::after { position: absolute; inset: 18%; content: ''; border: 1px dashed rgba(199,144,255,.25); border-radius: 50%; transform: rotate(55deg) skewX(22deg); }
+    .hero-orbit::after { inset: 38%; border-style: solid; animation: pulse-ring 3s ease-in-out infinite; }
+    .orbit-dot { position: absolute; top: 7%; left: 50%; width: 7px; height: 7px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 25px 6px rgba(192, 112, 255, .7); }
+    .orbit-label { position: absolute; top: 50%; left: 50%; color: rgba(237, 219, 255, .63); font-family: 'DM Mono', monospace; font-size: .58rem; letter-spacing: .2em; transform: translate(-50%, -50%); }
+
+    /* Sections and cards */
+    .section { position: relative; padding: 140px 0; }
+    .section-alt { background: linear-gradient(180deg, rgba(32, 15, 54, .2), rgba(9, 5, 16, .12)); }
+    .section-head { max-width: 650px; margin-bottom: 54px; }
+    .section-title { margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: clamp(2.25rem, 5vw, 4.1rem); font-weight: 600; letter-spacing: -.075em; line-height: 1; }
+    .section-sub { max-width: 570px; margin: 20px 0 0; color: var(--muted); font-size: 1rem; line-height: 1.75; }
+    .mv-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 19px; }
+    .card { position: relative; border: 1px solid var(--line); border-radius: 24px; background: linear-gradient(145deg, rgba(36, 20, 58, .78), rgba(14, 9, 23, .86)); box-shadow: 0 18px 55px rgba(0, 0, 0, .16); overflow: hidden; transform: translateZ(0); will-change: transform; transition: transform .45s var(--ease-out), border-color .3s ease, box-shadow .35s ease; }
+    .card::after { position: absolute; inset: 0; content: ''; pointer-events: none; opacity: 0; background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(213, 164, 255, .14), transparent 34%); transition: opacity .35s ease; }
+    .card:hover::after { opacity: 1; }
+    .mv-card:hover, .faculty-card:hover, .cta-card:hover { transform: translateY(-8px); box-shadow: 0 30px 85px rgba(74, 26, 130, .3); }
+    .card::before { position: absolute; top: -120px; left: -70px; width: 200px; height: 180px; content: ''; border-radius: 50%; opacity: 0; background: radial-gradient(circle, rgba(188, 112, 255, .25), transparent 70%); transition: opacity .35s ease, transform .5s var(--ease-out); pointer-events: none; }
+    .card:hover { border-color: rgba(197, 145, 255, .42); box-shadow: 0 25px 75px rgba(74, 26, 130, .2); }
+    .card:hover::before { opacity: 1; transform: translate(65px, 70px); }
+    .mv-card { min-height: 490px; padding: 36px; }
+    .card-index { position: absolute; top: 30px; right: 32px; color: rgba(212, 172, 255, .4); font-family: 'DM Mono', monospace; font-size: .67rem; }
+    .mv-icon { display: grid; place-items: center; width: 53px; height: 53px; margin-bottom: 45px; border: 1px solid rgba(205, 157, 255, .28); border-radius: 15px; color: var(--violet); background: rgba(178, 103, 255, .09); box-shadow: inset 0 0 23px rgba(169, 75, 255, .08), 0 0 24px rgba(130, 49, 240, .08); }
+    .mv-icon svg { width: 25px; height: 25px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.4; transition: transform .35s var(--ease-out); }
+    .card:hover .mv-icon svg { transform: rotate(12deg) scale(1.09); }
+    .mv-card h3, .faculty-name, .member-name { margin: 0; font-family: 'Space Grotesk', sans-serif; letter-spacing: -.04em; }
+    .mv-card h3 { font-size: 1.55rem; }
+    .mv-card > p { max-width: 480px; margin: 15px 0 0; color: var(--muted); line-height: 1.72; }
+    .mv-list { display: grid; gap: 10px; margin: 28px 0 0; padding: 0; list-style: none; }
+    .mv-list li { display: flex; align-items: flex-start; gap: 10px; color: #c9bfd5; font-size: .86rem; }
+    .mv-list li::before { flex: 0 0 auto; width: 6px; height: 6px; margin-top: .62em; content: ''; border-radius: 50%; background: var(--violet); box-shadow: 0 0 12px var(--purple); }
+    .faculty-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 19px; }
+    .faculty-card { display: flex; align-items: center; gap: 22px; padding: 24px; }
+    .faculty-avatar { position: relative; display: grid; flex: 0 0 auto; place-items: center; width: 112px; height: 112px; overflow: hidden; border: 1px solid rgba(210, 158, 255, .38); border-radius: 22px; color: #ddbdff; font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; background: radial-gradient(circle at 30% 20%, rgba(207, 141, 255, .5), transparent 38%), linear-gradient(145deg, #45206d, #140c22); box-shadow: inset 0 0 22px rgba(176, 91, 255, .24); transition: transform .4s var(--ease-out), box-shadow .4s ease; }
+    .faculty-card:hover .faculty-avatar { transform: rotate(-3deg) scale(1.06); box-shadow: inset 0 0 22px rgba(176, 91, 255, .24), 0 0 32px rgba(176, 91, 255, .3); }
+    .faculty-avatar::after { position: absolute; right: 8px; bottom: 8px; width: 7px; height: 7px; content: ''; border: 2px solid var(--surface-strong); border-radius: 50%; background: #bd80ff; box-shadow: 0 0 12px #bd80ff; }
+    .faculty-avatar::before { content: attr(data-initials); }
+    .faculty-photo { position: absolute; inset: 0; z-index: 1; display: block; width: 100%; height: 100%; object-fit: cover; }
+    .faculty-placeholder { position: relative; z-index: 0; font-family: 'DM Mono', monospace; font-size: .58rem; letter-spacing: .08em; text-transform: uppercase; }
+    .faculty-name { font-size: 1.16rem; }
+    .faculty-role { margin: 5px 0 0; color: #d0aeef; font-size: .83rem; }
+    .faculty-dept { margin: 2px 0 0; color: var(--faint); font-family: 'DM Mono', monospace; font-size: .64rem; }
+    .team-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 19px; }
+    .member-card { transform-style: preserve-3d; transition: transform .45s var(--ease-out), border-color .25s ease, box-shadow .3s ease; }
+    .member-card:hover { transform: translateY(-9px); }
+    .member-photo { position: relative; aspect-ratio: 1 / 1.08; overflow: hidden; background: linear-gradient(145deg, #392054, #120a1d); }
+    .member-photo::after { position: absolute; inset: 0; content: ''; background: linear-gradient(115deg, transparent 20%, rgba(224, 177, 255, .11) 48%, transparent 72%), linear-gradient(180deg, transparent 48%, rgba(13, 6, 22, .82)); background-size: 230% 100%, 100% 100%; background-position: 130% 0, 0 0; pointer-events: none; animation: photo-shimmer 8s ease-in-out infinite; }
+    .member-photo::before { position: absolute; inset: 15%; z-index: 0; content: ''; border: 1px solid rgba(213, 164, 255, .17); border-radius: 50%; box-shadow: 0 0 60px rgba(157, 74, 255, .22); animation: pulse-ring 4.5s ease-in-out infinite; }
+    .member-photo img { position: relative; z-index: 1; display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(.77) contrast(1.06); transition: transform .65s var(--ease-out), filter .45s ease; }
+    .member-card:hover .member-photo img { transform: scale(1.07); filter: saturate(1) contrast(1.06); }
+    .member-body { padding: 20px 20px 21px; }
+    .member-name { font-size: 1.05rem; }
+    .member-role { margin: 5px 0 0; color: #d0a5fa; font-size: .82rem; font-weight: 500; }
+    .member-dept { min-height: 39px; margin: 5px 0 17px; color: var(--faint); font-family: 'DM Mono', monospace; font-size: .62rem; line-height: 1.55; }
+    .cta-card { display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 48px; background: radial-gradient(circle at 83% 22%, rgba(186, 98, 255, .28), transparent 23%), linear-gradient(115deg, rgba(42, 19, 70, .9), rgba(15, 8, 27, .95)); }
+    .cta-card::after { position: absolute; right: 12%; bottom: -65px; width: 250px; height: 130px; content: ''; border: 1px solid rgba(205, 155, 255, .25); border-radius: 50%; transform: rotate(-18deg); box-shadow: 0 0 40px rgba(150, 75, 255, .14); }
+    .cta-title { margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.8rem, 4vw, 3.3rem); letter-spacing: -.07em; line-height: 1.02; }
+    .cta-copy { max-width: 570px; margin: 16px 0 0; color: var(--muted); line-height: 1.7; }
+    .cta-card .btn { position: relative; z-index: 1; flex: 0 0 auto; }
+
+    /* Footer */
+    .site-footer { border-top: 1px solid var(--line); background: rgba(5, 3, 9, .55); }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 104px; }
+    .footer-note { margin: 0; color: var(--faint); font-family: 'DM Mono', monospace; font-size: .63rem; letter-spacing: .03em; }
+    .footer-link { display: inline-flex; align-items: center; gap: 7px; color: #c8b8d7; font-size: .79rem; transition: color .2s ease; }
+    .footer-link:hover { color: var(--violet); }
+    .footer-link .icon-external { width: 13px; height: 13px; }
+
+    /* Reveal states */
+    .reveal { opacity: 0; filter: blur(8px); transform: translateY(28px) scale(.985); transition: opacity .8s var(--ease-out), filter .8s ease, transform .8s var(--ease-out); transition-delay: calc(var(--delay, 0) * 90ms); }
+    .section-title { position: relative; display: inline-block; }
+    .section-title::after { display: block; width: 58px; height: 2px; margin-top: 19px; content: ''; border-radius: 99px; background: linear-gradient(90deg, var(--violet), transparent); box-shadow: 0 0 18px rgba(209, 135, 255, .45); transform-origin: left; animation: title-line 3.5s ease-in-out infinite; }
+    .stat { transition: transform .3s var(--ease-out), color .3s ease; }
+    .stat:hover { color: var(--violet); transform: translateY(-5px); }
+    .stat:hover::before { box-shadow: 0 0 14px var(--violet); }
+    .reveal.is-visible { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
+    .hero .reveal { animation: hero-in 1s var(--ease-out) both; animation-delay: calc(var(--delay, 0) * 110ms + .1s); }
+    .hero .reveal:nth-child(1) { --delay: 0; }
+    [data-delay='1'] { --delay: 1; }
+    [data-delay='2'] { --delay: 2; }
+    [data-delay='3'] { --delay: 3; }
+    [data-delay='4'] { --delay: 4; }
+
+    @keyframes hero-in { from { opacity: 0; filter: blur(8px); transform: translateY(24px) scale(.985); } to { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); } }
+    @keyframes aurora-spin { to { transform: rotate(360deg); } }
+    @keyframes grid-drift { from { background-position: 0 0; } to { background-position: 74px 74px; } }
+    @keyframes gradient-flow { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    @keyframes float { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-17px) rotate(4deg); } }
+    @keyframes pulse-ring { 0%, 100% { opacity: .4; transform: scale(.92); } 50% { opacity: 1; transform: scale(1.04); } }
+    @keyframes ambient-sweep { from { background-position: 0 0, 0 0; } to { background-position: 0 0, 100% 0; } }
+    @keyframes star-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-60px, 60px, 0); } }
+    @keyframes line-pulse { 0%, 100% { opacity: .45; transform: scaleX(.72); transform-origin: left; } 50% { opacity: 1; transform: scaleX(1); transform-origin: left; } }
+    @keyframes title-line { 0%, 100% { opacity: .55; transform: scaleX(.72); } 50% { opacity: 1; transform: scaleX(1.25); } }
+    @keyframes photo-shimmer { 0%, 62%, 100% { background-position: 130% 0, 0 0; } 78% { background-position: -35% 0, 0 0; } }
+
+    @media (max-width: 960px) {
+      .team-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .hero-orbit { right: 4%; opacity: .55; }
+    }
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 34px, 580px); }
+      .header-inner { min-height: 72px; }
+      .menu-toggle { display: block; }
+      .header-cta { display: none; }
+      .nav-links { position: absolute; top: 69px; right: 17px; left: 17px; display: grid; gap: 3px; padding: 10px; border: 1px solid var(--line-bright); border-radius: 18px; opacity: 0; visibility: hidden; transform: translateY(-10px) scale(.98); background: rgba(17, 9, 28, .95); box-shadow: var(--shadow); backdrop-filter: blur(20px); transition: opacity .22s var(--ease-out), visibility .22s, transform .22s var(--ease-out); }
+      .nav-links.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+      .nav-links a { padding: 12px 14px; border-radius: 11px; }
+      .nav-links a:hover { background: rgba(166, 92, 255, .1); }
+      .nav-links a::after { display: none; }
+      .hero { min-height: 790px; }
+      .hero-inner { padding-top: 145px; }
+      .hero-title { font-size: clamp(3rem, 15vw, 5.5rem); }
+      .hero-copy { font-size: .95rem; }
+      .hero-stats { gap: 24px; margin-top: 66px; }
+      .stat dd { font-size: 1.8rem; }
+      .hero-orbit { right: -75px; bottom: 7%; width: 190px; height: 190px; }
+      .section { padding: 94px 0; }
+      .mv-grid, .faculty-grid { grid-template-columns: 1fr; }
+      .mv-card { min-height: auto; padding: 29px; }
+      .mv-icon { margin-bottom: 34px; }
+      .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+      .member-body { padding: 15px; }
+      .member-name { font-size: .94rem; }
+      .member-dept { font-size: .56rem; }
+      .btn-linkedin { padding: 0 10px; font-size: .7rem; }
+      .cta-card { align-items: flex-start; flex-direction: column; padding: 29px; }
+      .footer-inner { align-items: flex-start; flex-direction: column; justify-content: center; padding: 26px 0; }
+    }
+    @media (max-width: 420px) {
+      .team-grid { grid-template-columns: 1fr; }
+      .member-photo { aspect-ratio: 1.15 / 1; }
+      .hero-actions { align-items: stretch; flex-direction: column; width: 100%; }
+      .hero-actions .btn { width: 100%; }
+    }
+      @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+      .reveal { opacity: 1; filter: none; transform: none; }
+      .cursor-glow, .scroll-progress { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#about">Skip to content</a>
+  <div class="cursor-glow" aria-hidden="true"></div>
+  <div class="scroll-progress" aria-hidden="true"></div>
+
+  <header class="site-header" id="siteHeader">
+    <div class="shell header-inner">
+      <a class="brand" href="#top" aria-label="NXT Byte — home">
+        <!-- Logo insertion point: change the src below to your logo file, for example images/logo.png. -->
+        <img class="brand-logo" src="images/your-logo.png" alt="NXT Byte logo" />
+        <span class="brand-logo-slot" aria-hidden="true"><code>LOGO</code></span>
+        <span class="brand-name">NXT&nbsp;Byte</span>
+      </a>
+      <nav class="nav-links" id="primaryNav" aria-label="Primary">
+        <a href="#about">About</a>
+        <a href="#mission">Mission</a>
+        <a href="#faculty">Faculty</a>
+        <a href="#team">Team</a>
+      </nav>
+      <a class="btn btn-ghost header-cta" href="https://instagram.com" target="_blank" rel="noopener noreferrer"><span>Instagram</span><svg class="icon-external" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primaryNav" aria-label="Open menu"><span></span></button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" id="about">
+      <div class="hero-aurora" aria-hidden="true"></div>
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-orbit" aria-hidden="true"><span class="orbit-dot"></span><span class="orbit-label">BUILD / SHIP</span></div>
+      <div class="shell hero-inner">
+        <p class="eyebrow reveal">Entrepreneurship Cell</p>
+        <h1 class="hero-title reveal" data-delay="1">We build the founders<br />of the <span class="grad">next byte</span>.</h1>
+        <p class="hero-copy reveal" data-delay="2">NXT Byte is the campus Entrepreneurship Cell — a launchpad where curious students turn half-formed ideas into working products, real users and, eventually, real companies. We run workshops, hackathons, founder talks and build sprints that replace theory with shipping.</p>
+        <div class="hero-actions reveal" data-delay="3"><a class="btn btn-primary" href="#team"><span>Meet the team</span><svg class="icon-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></a><a class="btn btn-ghost" href="#mission">Our mission</a></div>
+        <dl class="hero-stats reveal" data-delay="4">
+          <div class="stat"><dt>Active members</dt><dd data-count="11">11+</dd></div>
+          <div class="stat"><dt>Sessions &amp; workshops</dt><dd data-count="20">20+</dd></div>
+          <div class="stat"><dt>Ideas incubated</dt><dd data-count="15">15+</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="mission">
+      <div class="shell">
+        <header class="section-head reveal"><p class="eyebrow">Why we exist</p><h2 class="section-title">Mission &amp; Vision</h2><p class="section-sub">Two halves of the same idea: what we do every week, and where it is all pointed.</p></header>
+        <div class="mv-grid">
+          <article class="card mv-card reveal"><span class="card-index" aria-hidden="true">01</span><div class="mv-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg></div><h3>Our Mission</h3><p>To make entrepreneurship a hands-on habit rather than a lecture topic. We give every student a room to test ideas in, mentors who have shipped before, and the momentum to go from a rough sketch to a working prototype in weeks — not semesters.</p><ul class="mv-list"><li>Run practical build sprints, hackathons and founder sessions</li><li>Connect students with mentors, alumni and early-stage investors</li><li>Turn campus problems into fundable, buildable products</li></ul></article>
+          <article class="card mv-card reveal" data-delay="1"><span class="card-index" aria-hidden="true">02</span><div class="mv-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="3"/></svg></div><h3>Our Vision</h3><p>A campus where starting something is the default, not the exception — where the next generation of engineers graduates having already built, broken and rebuilt something real, and where a student idea can find its first users before it finds a grade.</p><ul class="mv-list"><li>A self-sustaining founder community that outlives each batch</li><li>Student-led ventures with real traction beyond the campus gate</li><li>An innovation culture measured in launches, not certificates</li></ul></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="faculty">
+      <div class="shell">
+        <header class="section-head reveal"><p class="eyebrow">Guidance</p><h2 class="section-title">Our Faculty Advisors</h2><p class="section-sub">The mentors who keep the cell steady — bridging the classroom, the industry and the students building in between.</p></header>
+        <div class="faculty-grid">
+          <article class="card faculty-card reveal">
+            <!-- Faculty photo insertion point: replace the src below with your advisor's photo file, for example images/faculty-advisor.jpg. -->
+            <div class="faculty-avatar" data-initials="FA">
+              <img class="faculty-photo" src="images/faculty-advisor.jpg" alt="Photo of Prof. Abdul Majeed M.S" loading="lazy" decoding="async" onerror="this.style.display='none'" />
+              <span class="faculty-placeholder" aria-hidden="true">Photo</span>
+            </div>
+            <div><h3 class="faculty-name">Prof. Abdul Majeed M.S</h3><p class="faculty-role">Faculty Advisor</p><p class="faculty-dept">KMCTCEEM KSD</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="team">
+      <div class="shell">
+        <header class="section-head reveal"><p class="eyebrow">The people</p><h2 class="section-title">Our Team</h2><p class="section-sub">Designers, developers, organisers and storytellers — the crew that keeps NXT Byte shipping.</p></header>
+        <div class="team-grid">
+          <article class="card member-card reveal"><div class="member-photo"><img src="images/emna.jpg.jpeg" alt="Nafeesath Emna E. K" loading="lazy" decoding="async" /></div><div class="member-body"><h3 class="member-name">Nafeesath Emna E. K</h3><p class="member-role">Team Head</p><p class="member-dept">Artificial Intelligence &amp; Data Science</p><a class="btn btn-linkedin" href="https://www.linkedin.com/in/hijaz-aboobacker-94877b428" target="_blank" rel="noopener noreferrer" aria-label="Hijaz Aboobacker on LinkedIn"><svg class="icon-in" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21h-4V9Z"/></svg><span>LinkedIn</span></a></div></article>
+          <article class="card member-card reveal" data-delay="1"><div class="member-photo"><img src="images/shaima.jpg.jpeg" alt="Fathima Shaima S P" loading="lazy" decoding="async" /></div><div class="member-body"><h3 class="member-name">Fathima Shaima S P </h3><p class="member-role">Team Coordinator</p><p class="member-dept">Computer Science &amp; Engineering</p><a class="btn btn-linkedin" href="https://www.linkedin.com/in/alan-albin-909113316" target="_blank" rel="noopener noreferrer" aria-label="Alan Albin on LinkedIn"><svg class="icon-in" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21h-4V9Z"/></svg><span>LinkedIn</span></a></div></article>
+          <article class="card member-card reveal" data-delay="2"><div class="member-photo"><img src="images/albin.jpg.jpeg" alt="Albin Rajesh" loading="lazy" decoding="async" /></div><div class="member-body"><h3 class="member-name">Albin Rajesh</h3><p class="member-role">Tech Lead</p><p class="member-dept">Artificial Intelligence &amp; Data Science</p><a class="btn btn-linkedin" href="https://www.linkedin.com/in/sulaika-sana-j-m-9b623a390" target="_blank" rel="noopener noreferrer" aria-label="Sulaika Sana J M on LinkedIn"><svg class="icon-in" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21h-4V9Z"/></svg><span>LinkedIn</span></a></div></article>
+          <article class="card member-card reveal" data-delay="3"><div class="member-photo"><img src="images/alan.jpg.png" alt="Alan Albin" loading="lazy" decoding="async" /></div><div class="member-body"><h3 class="member-name">Alan Albin</h3><p class="member-role">Developer</p><p class="member-dept">Computer Science &amp; Engineering</p><a class="btn btn-linkedin" href="https://www.linkedin.com/in/vishnulal-vijayan-751179316" target="_blank" rel="noopener noreferrer" aria-label="Vishnulal Vijayan on LinkedIn"><svg class="icon-in" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21h-4V9Z"/></svg><span>LinkedIn</span></a></div></article>
+          <article class="card member-card reveal"><div class="member-photo"><img src="images/hijas.jpg.jpeg" alt="Hijas Aboobacker" loading="lazy" decoding="async" /></div><div class="member-body"><h3 class="member-name">Hijas Aboobacker</h3><p class="member-role">Developer</p><p class="member-dept">Computer Science &amp; Engineering</p><a class="btn btn-linkedin" href="https://www.linkedin.com/in/shuhaib-muhammed-8710b4397" target="_blank" rel="noopener noreferrer" aria-label="Shuhaib Muhammed on LinkedIn"><svg class="icon-in" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21h-4V9Z"/></svg><span>LinkedIn</span></a></div></article>
+          <article class="card member-card reveal" data-delay="1"><div class="member-photo"><img src="images/shuhaib.jpg.jpeg" alt="Shuhaib Muhammed" loading="lazy" decoding="async" /></div><div class="member-body"><h3 class="member-name">Shuhaib Muhammed</h3><p class="member-role">Developer</p><p class="member-dept">Computer Science &amp; Engineering</p><a class="btn btn-linkedin" href="https://www.linkedin.com/in/nabeesath-raheesa-25226033a" target="_blank" rel="noopener noreferrer" aria-label="Nabeesath Raheesa on LinkedIn"><svg class="icon-in" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21h-4V9Z"/></svg><span>LinkedIn</span></a></div></article>
+          <article class="card member-card reveal" data-delay="2"><div class="member-photo"><img src="images/naheeda.jpg.jpeg" alt="Ayshath Naheeda A" loading="lazy" decoding="async" /></div><div class="member-body"><h3 class="member-name">Ayshath Naheeda A</h3><p class="member-role">Marketing Lead</p><p class="member-dept">Artificial Intelligence &amp; Data Science</p><a class="btn btn-linkedin" href="https://www.linkedin.com/in/nafeesath-emna-71ba94384" target="_blank" rel="noopener noreferrer" aria-label="Nafeesath Emna on LinkedIn"><svg class="icon-in" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21h-4V9Z"/></svg><span>LinkedIn</span></a></div></article>
+          <article class="card member-card reveal" data-delay="3"><div class="member-photo"><img src="images/raheesa.jpg.jpeg" alt="Nabeesath Raheesa A" loading="lazy" decoding="async" /></div><div class="member-body"><h3 class="member-name">Nabeesath Raheesa A</h3><p class="member-role">Marketing Lead</p><p class="member-dept">Computer Science &amp; ENgineering</p><a class="btn btn-linkedin" href="https://www.linkedin.com/in/fathimath-noora-a-42670635a" target="_blank" rel="noopener noreferrer" aria-label="Fathimath Noora A on LinkedIn"><svg class="icon-in" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21h-4V9Z"/></svg><span>LinkedIn</span></a></div></article>
+          <article class="card member-card reveal"><div class="member-photo"><img src="images/noora.jpg.jpeg" alt="Fathimath Noora A" loading="lazy" decoding="async" /></div><div class="member-body"><h3 class="member-name">Fathimath Noora A</h3><p class="member-role">Media Lead</p><p class="member-dept">Computer Science &amp; Engineering</p><a class="btn btn-linkedin" href="https://www.linkedin.com/in/fathimath-jaseela-a-463801394" target="_blank" rel="noopener noreferrer" aria-label="Fathimath Jaseela A on LinkedIn"><svg class="icon-in" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21h-4V9Z"/></svg><span>LinkedIn</span></a></div></article>
+          <article class="card member-card reveal" data-delay="1"><div class="member-photo"><img src="images/vishnulal.jpg.jpeg" alt="Vishnulal Vijayan V" loading="lazy" decoding="async" /></div><div class="member-body"><h3 class="member-name">Vishnulal Vijayan V</h3><p class="member-role">Media Lead</p><p class="member-dept">Computer Scinece &amp; Engineering</p><a class="btn btn-linkedin" href="https://www.linkedin.com/in/ayshath-naheeda-a-486807394" target="_blank" rel="noopener noreferrer" aria-label="Ayshath Naheeda A on LinkedIn"><svg class="icon-in" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21h-4V9Z"/></svg><span>LinkedIn</span></a></div></article>
+          <article class="card member-card reveal" data-delay="2"><div class="member-photo"><img src="images/jaseela.jpg.jpeg" alt="Fathimath Jaseela A" loading="lazy" decoding="async" /></div><div class="member-body"><h3 class="member-name">Fathimath Jaseela A</h3><p class="member-role">Event Lead</p><p class="member-dept">Artificial Intelligence &amp; Data Science</p><a class="btn btn-linkedin" href="https://www.linkedin.com/in/fathima-shaima-4596a8390" target="_blank" rel="noopener noreferrer" aria-label="Fathima Shaima on LinkedIn"><svg class="icon-in" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21h-4V9Z"/></svg><span>LinkedIn</span></a></div></article>
+           <article class="card member-card reveal" data-delay="3"><div class="member-photo"><img src="images/sana.jpg" alt="Sulaika Sana J M" loading="lazy" decoding="async" /></div><div class="member-body"><h3 class="member-name">Sulaika Sana J M</h3><p class="member-role">Documentation Head</p><p class="member-dept">Computer Science &amp; ENgineering</p><a class="btn btn-linkedin" href="https://www.linkedin.com/in/fathimath-noora-a-42670635a" target="_blank" rel="noopener noreferrer" aria-label="Fathimath Noora A on LinkedIn"><svg class="icon-in" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21h-4V9Z"/></svg><span>LinkedIn</span></a></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell"><div class="card cta-card reveal"><div><h2 class="cta-title">Got an idea worth building?</h2><p class="cta-copy">Bring it to NXT Byte. We will help you shape it, prototype it and put it in front of real users — starting with the people on this page.</p></div><a class="btn btn-primary" href="https://instagram.com" target="_blank" rel="noopener noreferrer"><span>Talk to us on Instagram</span><svg class="icon-external" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a></div></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="#top" aria-label="NXT Byte — back to top"><span class="brand-mark" aria-hidden="true"><span class="brand-mark-dot"></span></span><span class="brand-name">NXT&nbsp;Byte</span></a><p class="footer-note">Entrepreneurship Cell · Built by the NXT Byte team</p><a class="footer-link" href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram<svg class="icon-external" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></a></div></footer>
+
+  <script>
+    (() => {
+      const header = document.querySelector('.site-header');
+      const progress = document.querySelector('.scroll-progress');
+      const glow = document.querySelector('.cursor-glow');
+      const nav = document.querySelector('.nav-links');
+      const toggle = document.querySelector('.menu-toggle');
+      const navLinks = [...document.querySelectorAll('.nav-links a')];
+      const sections = [...document.querySelectorAll('main section[id]')];
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const updateScroll = () => {
+        const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.transform = `scaleX(${scrollable ? window.scrollY / scrollable : 0})`;
+        header.classList.toggle('scrolled', window.scrollY > 18);
+      };
+      updateScroll();
+      window.addEventListener('scroll', updateScroll, { passive: true });
+
+      if (!reduced) {
+        window.addEventListener('pointermove', (event) => {
+          glow.style.left = `${event.clientX}px`;
+          glow.style.top = `${event.clientY}px`;
+        }, { passive: true });
+      }
+
+      toggle.addEventListener('click', () => {
+        const open = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!open));
+        toggle.setAttribute('aria-label', open ? 'Open menu' : 'Close menu');
+        nav.classList.toggle('open', !open);
+      });
+      navLinks.forEach((link) => link.addEventListener('click', () => {
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Open menu');
+        nav.classList.remove('open');
+      }));
+
+      const revealItems = document.querySelectorAll('.section .reveal');
+      if ('IntersectionObserver' in window && !reduced) {
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
+          });
+        }, { threshold: .14, rootMargin: '0px 0px -40px' });
+        revealItems.forEach((item) => revealObserver.observe(item));
+      } else revealItems.forEach((item) => item.classList.add('is-visible'));
+
+      if ('IntersectionObserver' in window) {
+        const sectionObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              navLinks.forEach((link) => link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`));
+            }
+          });
+        }, { rootMargin: '-42% 0px -50% 0px' });
+        sections.forEach((section) => sectionObserver.observe(section));
+      }
+
+      const counters = document.querySelectorAll('[data-count]');
+      const animateCounters = () => counters.forEach((counter) => {
+        const target = Number(counter.dataset.count);
+        const duration = 900;
+        const start = performance.now();
+        const tick = (now) => {
+          const progressValue = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progressValue, 3);
+          counter.textContent = `${Math.round(target * eased)}+`;
+          if (progressValue < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      });
+      const stats = document.querySelector('.hero-stats');
+      if (stats && !reduced) {
+        new IntersectionObserver((entries, observer) => {
+          if (entries[0].isIntersecting) { animateCounters(); observer.disconnect(); }
+        }, { threshold: .7 }).observe(stats);
+      }
+
+      if (!reduced && window.matchMedia('(pointer: fine)').matches) {
+        document.querySelectorAll('.card').forEach((card) => {
+          card.addEventListener('pointermove', (event) => {
+            const rect = card.getBoundingClientRect();
+            card.style.setProperty('--mx', `${((event.clientX - rect.left) / rect.width) * 100}%`);
+            card.style.setProperty('--my', `${((event.clientY - rect.top) / rect.height) * 100}%`);
+          }, { passive: true });
+          card.addEventListener('pointerleave', () => {
+            card.style.removeProperty('--mx');
+            card.style.removeProperty('--my');
+          });
+        });
+        document.querySelectorAll('.member-card').forEach((card) => {
+          card.addEventListener('pointermove', (event) => {
+            const rect = card.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width - .5;
+            const y = (event.clientY - rect.top) / rect.height - .5;
+            card.style.transform = `perspective(900px) rotateX(${y * -3}deg) rotateY(${x * 3}deg) translateY(-9px)`;
+          });
+          card.addEventListener('pointerleave', () => { card.style.transform = ''; });
+        });
+      }
+
+      document.querySelectorAll('img').forEach((img) => img.addEventListener('error', () => {
+        img.style.display = 'none';
+        img.parentElement.classList.add('image-missing');
+      }));
+    })();
+  </script>
+</body>
+</html>
